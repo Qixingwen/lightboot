@@ -1,0 +1,46 @@
+version: "1.0"
+name: ci
+displayName: CI
+stages:
+- name: build-and-verify
+  displayName: 构建与验证
+  strategy: naturally
+  trigger: auto
+  steps:
+  - step: build@maven
+    name: 6f45a399
+    displayName: Maven 构建
+    jdkVersion: "21"
+    mavenVersion: 3.9.12
+    commands:
+    - '# 功能：全量验证（enforcer 依赖收敛 + 全量测试 + sources/javadoc jar 打包）'
+    - '# -B：batch 模式；-ntp：静默下载进度；-T 1C：按 CPU 核数并行构建'
+    - ./mvnw clean verify -B -ntp -T 1C
+    artifacts:
+    - name: BUILD_ARTIFACT
+      path:
+      - lightboot-core/target/*.jar
+      - lightboot-data/target/*.jar
+      - lightboot-logging/target/*.jar
+      - lightboot-ratelimit/target/*.jar
+      - lightboot-redis/target/*.jar
+      - lightboot-redis-lock/target/*.jar
+      - lightboot-web/target/*.jar
+      type: .tar.gz
+    settings: []
+    caches:
+    - "~/.m2"
+    strategy:
+      retry: "0"
+      resource:
+        cpu: "2"
+        memory: "4"
+triggers:
+  trigger: auto
+  push:
+    branches:
+      prefix: []
+      precise:
+      - master
+      include: []
+notify: []

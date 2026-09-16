@@ -1,0 +1,39 @@
+{
+  "properties": [
+    {
+      "name": "light-boot.ratelimit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable rate limiting. Default true, but only takes effect when both redis and aop dependencies are present.",
+      "sourceType": "cn.nextdev.lightboot.ratelimit.config.RateLimitProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.ratelimit.default-time",
+      "type": "java.lang.Integer",
+      "description": "Default time window in seconds for rate limiting.",
+      "sourceType": "cn.nextdev.lightboot.ratelimit.config.RateLimitProperties",
+      "defaultValue": 1
+    },
+    {
+      "name": "light-boot.ratelimit.default-count",
+      "type": "java.lang.Integer",
+      "description": "Default max requests allowed within the time window.",
+      "sourceType": "cn.nextdev.lightboot.ratelimit.config.RateLimitProperties",
+      "defaultValue": 100
+    },
+    {
+      "name": "light-boot.ratelimit.fail-open",
+      "type": "java.lang.Boolean",
+      "description": "Whether to allow requests when Redis is unavailable (fail-open). true (default) allows requests on Redis errors; false rejects them (security-first).",
+      "sourceType": "cn.nextdev.lightboot.ratelimit.config.RateLimitProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.ratelimit.message",
+      "type": "java.lang.String",
+      "description": "Default message returned when rate limit is exceeded.",
+      "sourceType": "cn.nextdev.lightboot.ratelimit.config.RateLimitProperties",
+      "defaultValue": "请求过于频繁，请稍后重试"
+    }
+  ]
+}

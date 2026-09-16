@@ -1,0 +1,5 @@
+cn.nextdev.lightboot.redis.config.RedisTemplateAutoConfiguration
+cn.nextdev.lightboot.redis.config.RedisCachingAutoConfiguration
+cn.nextdev.lightboot.redis.config.RedisCacheAutoConfiguration
+cn.nextdev.lightboot.redis.config.RedisServiceAutoConfiguration
+cn.nextdev.lightboot.redis.config.RedisObservabilityAutoConfiguration

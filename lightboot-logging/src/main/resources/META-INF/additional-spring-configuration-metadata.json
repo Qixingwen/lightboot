@@ -1,0 +1,67 @@
+{
+  "properties": [
+    {
+      "name": "light-boot.logging.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用日志模块。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.logging.trace.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 TraceId 过滤器。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Trace",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.logging.trace.header-name",
+      "type": "java.lang.String",
+      "description": "TraceId 请求头名称，用于上下游透传。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Trace",
+      "defaultValue": "X-Trace-Id"
+    },
+    {
+      "name": "light-boot.logging.request.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 HTTP 请求日志。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Request",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.logging.request.exclude-paths",
+      "type": "java.util.List",
+      "description": "排除路径列表（Ant 风格），匹配的路径不记录请求日志。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Request",
+      "defaultValue": ["/actuator/**", "/favicon.ico"]
+    },
+    {
+      "name": "light-boot.logging.request.slow-threshold-ms",
+      "type": "java.lang.Long",
+      "description": "Slow request threshold in milliseconds. Requests reaching or exceeding this duration are logged at WARN level with a [SLOW] marker. Default 1000. Set 0 or negative to disable.",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Request",
+      "defaultValue": 1000
+    },
+    {
+      "name": "light-boot.logging.request.trusted-proxies",
+      "type": "java.util.List",
+      "description": "受信代理 CIDR 列表（如 10.0.0.0/8）。仅当直连 remoteAddr 命中此处时，才采信 X-Forwarded-For / X-Real-IP 等转发头解析客户端真实 IP；默认空表示不信任任何代理，直接使用 TCP 连接地址，防止客户端伪造转发头。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Request",
+      "defaultValue": []
+    },
+    {
+      "name": "light-boot.logging.mask.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用日志脱敏。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Mask",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.logging.mask.wired",
+      "type": "java.lang.Boolean",
+      "description": "是否已由使用方在 logback-spring.xml 完成 %maskMsg/%maskEx 接线。置 true 可抑制 MaskingStartupLogger 的启动 WARN。",
+      "sourceType": "cn.nextdev.lightboot.logging.config.LoggingProperties$Mask",
+      "defaultValue": false
+    }
+  ]
+}

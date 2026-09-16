@@ -1,0 +1,2 @@
+cn.nextdev.lightboot.logging.config.LoggingAutoConfiguration
+cn.nextdev.lightboot.logging.config.LoggingObservabilityAutoConfiguration

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 引入 Spring Boot 默认 logback 基础配置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- 脱敏转换器（依赖 lightboot-logging，pattern 中用 %maskMsg / %maskEx）；本文件已完成接线，建议同时设置 light-boot.logging.mask.wired=true 以消除启动提示 WARN -->
+    <conversionRule conversionWord="maskMsg" class="cn.nextdev.lightboot.logging.mask.MaskingConverter"/>
+    <conversionRule conversionWord="maskEx" class="cn.nextdev.lightboot.logging.mask.MaskingThrowableConverter"/>
+
+    <!-- ============================= 应用参数 ============================= -->
+
+    <!-- 应用名：取自 spring.application.name -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="lightboot"/>
+    <!-- 主机名：取自 HOSTNAME，缺省 localhost -->
+    <property name="HOST_NAME" value="${HOSTNAME:-localhost}"/>
+
+    <!-- ============================= 全局参数 ============================= -->
+
+    <!-- 日志目录：取自 logging.file.path，缺省 ./logs -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="./logs"/>
+    <!-- 日志文件名前缀：目录 + 应用名，主文件 / ERROR 文件均由此派生 -->
+    <property name="LOG_FILE_PREFIX" value="${LOG_PATH}/${APP_NAME}"/>
+    <!-- 业务包根路径：dev 环境单独调到 DEBUG -->
+    <property name="APP_PACKAGE" value="cn.nextdev"/>
+
+    <!-- ============================= 日志格式 ============================= -->
+
+    <!-- 控制台格式：带 ANSI 颜色 -->
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(${PID:- }){magenta} %clr(---){faint} %clr([${APP_NAME}@${HOST_NAME}]){cyan} %clr([%thread]){faint} %clr([%X{traceId:-}]){faint} %clr(%-5level) %clr(%-40.40logger{39}){cyan} %clr(:){faint} %maskMsg%n%maskEx"/>
+    <!-- 文件格式：纯文本（含 traceId、主机名，无 ANSI 颜色） -->
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:- } --- [${APP_NAME}@${HOST_NAME}] [%thread] [%X{traceId:-}] %-40.40logger{39} : %maskMsg%n%maskEx"/>
+    <!-- ERROR 文件格式：含调用者位置（%caller{1}） -->
+    <property name="ERROR_LOG_PATTERN" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:- } --- [${APP_NAME}@${HOST_NAME}] [%thread] [%X{traceId:-}] %-40.40logger{39} %caller{1} : %maskMsg%n%maskEx"/>
+
+    <!-- ============================== 输出器 ============================== -->
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 主日志文件：INFO 及以上 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_PREFIX}.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_PREFIX}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- ERROR 日志文件：仅 ERROR -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_PREFIX}-error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_PREFIX}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${ERROR_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 主文件异步包装：洪峰时丢弃新事件，不阻塞业务线程 -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>1024</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- ERROR 文件异步包装：宁可阻塞也不丢错误日志；includeCallerData 配合 %caller 输出调用栈 -->
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>false</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="ERROR_FILE"/>
+    </appender>
+
+    <!-- ========================== 第三方框架降噪 ========================== -->
+
+    <!-- Web 服务器 / Servlet 容器 -->
+    <logger name="org.apache.catalina" level="WARN"/>
+    <logger name="org.apache.tomcat" level="WARN"/>
+    <!-- Spring 框架 -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.boot.web" level="WARN"/>
+    <!-- ORM / SQL（MyBatis） -->
+    <logger name="org.apache.ibatis" level="WARN"/>
+    <logger name="org.mybatis" level="WARN"/>
+    <!-- 数据库连接池（HikariCP） -->
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <!-- Bean Validation（hibernate-validator） -->
+    <logger name="org.hibernate.validator" level="WARN"/>
+    <!-- Redis 客户端（Lettuce） -->
+    <logger name="io.lettuce" level="WARN"/>
+    <!-- API 文档（SpringDoc OpenAPI/Swagger UI） -->
+    <logger name="org.springdoc" level="WARN"/>
+
+    <!-- ========================== 框架 logger 显式管理 ========================== -->
+
+    <!-- 请求访问日志：正常 INFO，慢请求 WARN 带 [SLOW]；阈值由 light-boot.logging.request.slow-threshold-ms 控制 -->
+    <logger name="cn.nextdev.lightboot.logging.request.RequestLogFilter" level="INFO"/>
+    <!-- 脱敏告警：具名 logger 便于单独管理级别；防重入由 logback appender 线程级保护保证（单 appender 下该告警可能被吞，多 appender 下可能重复） -->
+    <logger name="light-boot.logging.mask" level="WARN"/>
+
+    <!-- ========================== 按环境区分输出 ========================== -->
+    <!-- 显式枚举各 profile：未枚举的 profile（或未激活任何 profile）将落入「无输出」分支（fail-closed），新增 profile 时需同步补充 -->
+
+    <!-- 开发环境：控制台 + 文件，业务包 DEBUG -->
+    <springProfile name="dev">
+        <logger name="org.springframework.boot.web.embedded" level="INFO"/>
+        <logger name="${APP_PACKAGE}" level="DEBUG"/>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境：控制台 + 文件 -->
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境：仅文件 -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

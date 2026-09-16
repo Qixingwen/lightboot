@@ -1,0 +1,5 @@
+cn.nextdev.lightboot.web.config.AsyncConfig
+cn.nextdev.lightboot.web.config.CorsConfig
+cn.nextdev.lightboot.web.config.JacksonConfig
+cn.nextdev.lightboot.web.config.SchedulingConfig
+cn.nextdev.lightboot.web.config.WebAutoConfiguration

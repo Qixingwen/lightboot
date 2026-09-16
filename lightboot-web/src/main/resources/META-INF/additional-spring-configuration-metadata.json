@@ -1,0 +1,144 @@
+{
+  "properties": [
+    {
+      "name": "light-boot.cors.allowed-origins",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed origins for cross-origin requests. Secure default is an empty list (no origins allowed) — must be configured explicitly. Examples: \"*\", \"https://example.com\", \"http://localhost:3000\". Cannot use \"*\" when allow-credentials is true.",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": []
+    },
+    {
+      "name": "light-boot.cors.allowed-methods",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed HTTP methods. Common: GET, POST, PUT, DELETE, OPTIONS.",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    },
+    {
+      "name": "light-boot.cors.allowed-headers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed request headers. Use \"*\" for all headers, or specify: \"Content-Type\", \"Authorization\".",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": ["*"]
+    },
+    {
+      "name": "light-boot.cors.exposed-headers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Exposed response headers accessible by browsers. Common: \"Content-Disposition\", \"Authorization\", \"X-Total-Count\".",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": ["Content-Disposition", "Authorization"]
+    },
+    {
+      "name": "light-boot.cors.allow-credentials",
+      "type": "java.lang.Boolean",
+      "description": "Allow credentials (cookies, auth headers). When true, must use explicit origins (no \"*\").",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "light-boot.cors.max-age",
+      "type": "java.lang.Long",
+      "description": "Preflight response cache time in seconds. Dev: 60-300s, Prod: 3600s (1 hour).",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": 3600
+    },
+    {
+      "name": "light-boot.cors.path-pattern",
+      "type": "java.lang.String",
+      "description": "URL path pattern for CORS configuration. Default: \"/**\" (all paths).",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": "/**"
+    },
+    {
+      "name": "light-boot.cors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable CORS auto-configuration. Default false (must be explicitly enabled); when false, neither the MVC CorsConfigurer nor the Security CorsFilter bean is registered. Set true to enable framework-managed CORS.",
+      "sourceType": "cn.nextdev.lightboot.web.config.CorsConfig$CorsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "light-boot.async.executor.core-pool-size",
+      "type": "java.lang.Integer",
+      "description": "Core pool size. Note: with the default allow-core-thread-time-out=true, idle core threads are reclaimed after keep-alive-seconds (not kept alive forever). CPU-bound: CPU cores; IO-bound: CPU cores x 2.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": 10
+    },
+    {
+      "name": "light-boot.async.executor.max-pool-size",
+      "type": "java.lang.Integer",
+      "description": "Maximum pool size - must be >= corePoolSize. CPU-bound: same as corePoolSize; IO-bound: CPU cores x 4+.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": 20
+    },
+    {
+      "name": "light-boot.async.executor.queue-capacity",
+      "type": "java.lang.Integer",
+      "description": "Queue capacity - max tasks waiting for execution. Small (100-500): faster rejection, lower memory. Large (1000+): better throughput, higher memory.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": 500
+    },
+    {
+      "name": "light-boot.async.executor.keep-alive-seconds",
+      "type": "java.lang.Integer",
+      "description": "Idle thread timeout in seconds. Affects non-core threads unless allowCoreThreadTimeOut is enabled.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": 60
+    },
+    {
+      "name": "light-boot.async.executor.thread-name-prefix",
+      "type": "java.lang.String",
+      "description": "Thread name prefix for identification (e.g., \"async-executor-1\").",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": "async-executor-"
+    },
+    {
+      "name": "light-boot.async.executor.allow-core-thread-time-out",
+      "type": "java.lang.Boolean",
+      "description": "Whether core threads can timeout during idle periods. True: lower resource usage, slight latency spike on ramp-up. False: consistent performance, higher baseline usage.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.async.executor.await-termination-seconds",
+      "type": "java.lang.Integer",
+      "description": "Max seconds to wait for tasks during graceful shutdown. Short tasks: 30-60s; Long tasks: 120-300s.",
+      "sourceType": "cn.nextdev.lightboot.web.config.AsyncConfig$AsyncExecutorProperties",
+      "defaultValue": 60
+    },
+    {
+      "name": "light-boot.scheduling.thread-pool.pool-size",
+      "type": "java.lang.Integer",
+      "description": "Thread pool size for scheduled tasks. Light scheduling: 2-5, Moderate: 5-10, Heavy: 10-20.",
+      "sourceType": "cn.nextdev.lightboot.web.config.SchedulingConfig$SchedulingThreadPoolProperties",
+      "defaultValue": 10
+    },
+    {
+      "name": "light-boot.scheduling.thread-pool.thread-name-prefix",
+      "type": "java.lang.String",
+      "description": "Thread name prefix for identification (e.g., \"scheduled-task-1\").",
+      "sourceType": "cn.nextdev.lightboot.web.config.SchedulingConfig$SchedulingThreadPoolProperties",
+      "defaultValue": "scheduled-task-"
+    },
+    {
+      "name": "light-boot.scheduling.thread-pool.wait-for-tasks-to-complete-on-shutdown",
+      "type": "java.lang.Boolean",
+      "description": "Whether to wait for tasks to complete during graceful shutdown. When true, the scheduler will wait for running tasks to finish before allowing the application to fully shut down.",
+      "sourceType": "cn.nextdev.lightboot.web.config.SchedulingConfig$SchedulingThreadPoolProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.scheduling.thread-pool.await-termination-seconds",
+      "type": "java.lang.Integer",
+      "description": "Maximum seconds to wait for tasks during graceful shutdown. Recommended: 30-60 seconds for most scheduled tasks.",
+      "sourceType": "cn.nextdev.lightboot.web.config.SchedulingConfig$SchedulingThreadPoolProperties",
+      "defaultValue": 60
+    },
+    {
+      "name": "light-boot.web.http-status.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether exception responses carry real HTTP status codes (400/401/403/404/429/500). Default true; set false to revert to HTTP 200 for all responses (legacy behavior).",
+      "sourceType": "cn.nextdev.lightboot.web.config.WebProperties$HttpStatusProperties",
+      "defaultValue": true
+    }
+  ]
+}

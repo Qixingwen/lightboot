@@ -1,0 +1,121 @@
+{
+  "properties": [
+    {
+      "name": "light-boot.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Redis 模块自动配置。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.redis.key-prefix",
+      "type": "java.lang.String",
+      "description": "Key 全局前缀，用于区分不同项目/环境。应用于 SequenceService 等框架内部生成的 Key。缓存 Key 前缀由 light-boot.cache.redis.key-prefix 单独控制。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties",
+      "defaultValue": "light-boot:"
+    },
+    {
+      "name": "light-boot.redis.serializer.base-packages",
+      "type": "java.util.List<java.lang.String>",
+      "description": "允许反序列化的业务包路径白名单。框架默认仅放行常用 JDK 具体类型（String/Number/Boolean/Character/Collection/Map 子类型）与 cn.nextdev.lightboot. 包；java.util.Date、枚举等默认被拒，如需缓存此类类型请使用业务 DTO 包裹而非放行 JDK 包。配置项将做包点边界归一化，并拒绝空串/通配符与 java/com.sun 等危险前缀（启动即失败）。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$SerializerProperties"
+    },
+    {
+      "name": "light-boot.cache.redis.key-prefix",
+      "type": "java.lang.String",
+      "description": "缓存 Key 前缀，用于共享 Redis 实例中的命名空间隔离。例如 \"app:\" 会生成 \"app:users::1\" 形式的 Key。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties",
+      "defaultValue": "app:"
+    },
+    {
+      "name": "light-boot.cache.redis.time-to-live",
+      "type": "java.lang.Integer",
+      "description": "缓存条目默认存活时间（秒）。可被 caches 中每个缓存的单独配置覆盖。短周期数据: 300-1800s，中周期: 1800-3600s，长周期: 3600-86400s。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties",
+      "defaultValue": 3600
+    },
+    {
+      "name": "light-boot.cache.redis.cache-null-values",
+      "type": "java.lang.Boolean",
+      "description": "是否缓存 null 值。true: 缓存 null 结果以防止缓存穿透；false: 不缓存 null 以节省内存。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "light-boot.cache.redis.use-key-prefix",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Key 前缀。建议在共享 Redis 或多应用场景下启用。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.cache.redis.caches",
+      "type": "java.util.Map<java.lang.String,cn.nextdev.lightboot.redis.config.RedisCacheProperties$CacheSpecificProperties>",
+      "description": "每个缓存的独立配置，Map 的 key 为缓存名称。可覆盖默认 TTL 等设置。示例：users.time-to-live=1800, products.time-to-live=7200。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties",
+      "defaultValue": {}
+    },
+    {
+      "name": "light-boot.cache.redis.caches.*.time-to-live",
+      "type": "java.lang.Integer",
+      "description": "特定缓存的存活时间（秒），覆盖默认 time-to-live。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisCacheProperties$CacheSpecificProperties"
+    },
+    {
+      "name": "light-boot.redis.fault-tolerant",
+      "type": "java.lang.Boolean",
+      "description": "Enable fault-tolerant RedisService: read ops return null/empty on Redis errors instead of throwing. Write ops still throw. Default false.",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "light-boot.redis.command-timeout-millis",
+      "type": "java.lang.Long",
+      "description": "Redis 命令超时（毫秒）。超时的命令抛异常，避免请求线程被无限挂起。通过 LettuceClientConfigurationBuilderCustomizer 应用，覆盖 spring.data.redis.timeout。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties",
+      "defaultValue": 3000
+    },
+    {
+      "name": "light-boot.redis.connect-timeout-millis",
+      "type": "java.lang.Long",
+      "description": "连接超时（毫秒）。通过 LettuceClientOptionsBuilderCustomizer 应用到 Lettuce ClientOptions 的 SocketOptions.connectTimeout，控制 TCP 建连阶段超时。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties",
+      "defaultValue": 2000
+    },
+    {
+      "name": "light-boot.redis.pool.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Lettuce 连接池（需 commons-pool2，且需 spring.data.redis.lettuce.pool.enabled=true 才会被 Spring Boot 构建为带池客户端）。默认 true。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$PoolProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.redis.pool.max-total",
+      "type": "java.lang.Integer",
+      "description": "连接池最大连接数。默认 16。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$PoolProperties",
+      "defaultValue": 16
+    },
+    {
+      "name": "light-boot.redis.pool.max-idle",
+      "type": "java.lang.Integer",
+      "description": "连接池最大空闲连接。默认 8。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$PoolProperties",
+      "defaultValue": 8
+    },
+    {
+      "name": "light-boot.redis.pool.min-idle",
+      "type": "java.lang.Integer",
+      "description": "连接池最小空闲连接。默认 2。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$PoolProperties",
+      "defaultValue": 2
+    },
+    {
+      "name": "light-boot.redis.pool.max-wait-millis",
+      "type": "java.lang.Long",
+      "description": "获取连接最大等待（毫秒）。默认 2000。",
+      "sourceType": "cn.nextdev.lightboot.redis.config.RedisProperties$PoolProperties",
+      "defaultValue": 2000
+    }
+  ]
+}

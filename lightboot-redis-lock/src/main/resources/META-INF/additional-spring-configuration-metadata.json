@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "light-boot.redis.redisson.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Redisson 客户端与锁的自动装配。",
+      "sourceType": "cn.nextdev.lightboot.redis.lock.redisson.config.RedissonProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "light-boot.redis.redisson.lock-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否装配 RedissonDistributedLock。设为 false 时仅创建 RedissonClient，不装配锁封装。",
+      "sourceType": "cn.nextdev.lightboot.redis.lock.redisson.config.RedissonProperties",
+      "defaultValue": true
+    }
+  ]
+}
